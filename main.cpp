@@ -33,24 +33,28 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode *removeElements(ListNode *head, int val) {
-        auto *dummyHead = new ListNode(-1, head);
-        ListNode *ptr = dummyHead;
-        while (ptr != nullptr && ptr->next != nullptr) {
-            if (ptr->next->val == val) {
-                ListNode *x = ptr->next;
-                ptr->next = ptr->next->next;
-                delete x;
-            } else {
-                ptr = ptr->next;
+    // 返回由 n 个不同数字 x_1 < x_2 < ... < x_n 组成的节点值互不相同的二叉搜索树的种数
+    int numTrees(int n) {
+        if (n < 2) {
+            return 1;
+        }
+        if (memo.count(n) == 0) {
+            // 根节点为 x_i
+            for (int i = 1; i <= n; ++i) {
+                // 左子树由 i-1 个数字 x1 < x2 < ... < x_i-1 组成
+                int left = numTrees(i - 1);
+                // 右子树由 n-i 个数字 x_i+1 < x_i+2 < ... < x_n 组成
+                int right = numTrees(n - i);
+                memo[n] += left * right;
             }
         }
-        head = dummyHead->next;
-        delete dummyHead;
-        return head;
+        return memo[n];
     }
+
+private:
+    unordered_map<int, int> memo;
 };
-// https://leetcode.cn/submissions/detail/391584118/
+// https://leetcode.cn/submissions/detail/391591454/
 
 int main() {
     return 0;
